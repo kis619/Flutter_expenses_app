@@ -49,29 +49,32 @@ class _MyHomePageState extends State<MyHomePage> {
   final List<Transaction> _userTransactions = [];
 
   List<Transaction> get _weekTransactions {
-    // int startIndex = 0;
-    // if (_weekTransactions.length < 7) {
-    //   startIndex = _weekTransactions.length - 1;
-    // } else {
-    //   startIndex = _weekTransactions.length - 7;
-    // }
-
-    // return _userTransactions.sublist(startIndex);
+    //   int startIndex = 0;
+    //   if (_userTransactions.length > 7) {
+    //     startIndex = _userTransactions.length - 7;
+    //   }
+    //   return _userTransactions.sublist(startIndex);
 
     return _userTransactions.where((tx) {
       return tx.date.isAfter(DateTime.now().subtract(const Duration(days: 7)));
     }).toList();
   }
 
-  void _addNewTransaction(String txTitle, double txAmount) {
+  void _addNewTransaction(String txTitle, double txAmount, DateTime date) {
     final transaction = Transaction(
       title: txTitle,
       amount: txAmount,
-      date: DateTime.now(),
+      date: date,
       id: DateTime.now().toString(),
     );
     setState(() {
       _userTransactions.add(transaction);
+    });
+  }
+
+  void _removeTransaction(String id) {
+    setState(() {
+      _userTransactions.removeWhere((transaction) => transaction.id == id);
     });
   }
 
@@ -102,7 +105,7 @@ class _MyHomePageState extends State<MyHomePage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Chart(weekTransactions: _weekTransactions),
-            TransactionList(transactions: _userTransactions)
+            TransactionList(transactions: _userTransactions.reversed.toList(), removeTransaction: _removeTransaction)
           ],
         ),
       ),
