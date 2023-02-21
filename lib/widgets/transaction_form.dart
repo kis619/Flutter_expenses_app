@@ -1,11 +1,26 @@
 import 'package:flutter/material.dart';
 
-class TransactionForm extends StatelessWidget {
-  final titleController = TextEditingController();
-  final amountController = TextEditingController();
+class TransactionForm extends StatefulWidget {
   final void Function(String title, double amount) addTransaction;
 
-  TransactionForm({super.key, required this.addTransaction});
+  const TransactionForm({super.key, required this.addTransaction});
+
+  @override
+  State<TransactionForm> createState() => _TransactionFormState();
+}
+
+class _TransactionFormState extends State<TransactionForm> {
+  final titleController = TextEditingController();
+  final amountController = TextEditingController();
+
+  void submitData() {
+    widget.addTransaction(
+      titleController.text.isEmpty ? 'Default' : titleController.text,
+      double.tryParse(amountController.text) ?? 0,
+    );
+    Navigator.of(context).pop();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -15,21 +30,21 @@ class TransactionForm extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: <Widget>[
             TextField(
+              onSubmitted: (_) => submitData(),
               decoration: const InputDecoration(labelText: 'Title'),
               controller: titleController,
             ),
             TextField(
+              onSubmitted: (_) => submitData(),
               decoration: const InputDecoration(labelText: 'Amount'),
               controller: amountController,
+              keyboardType:
+                  const TextInputType.numberWithOptions(decimal: true),
             ),
             TextButton(
-                onPressed: () {
-                  addTransaction(
-                    titleController.text,
-                    double.tryParse(amountController.text) ?? 0,
-                  );
-                },
-                child: const Text('Add transaction')),
+              onPressed: submitData,
+              child: const Text('Add transaction'),
+            ),
           ],
         ),
       ),
