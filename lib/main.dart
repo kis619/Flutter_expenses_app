@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import './widgets/transactions_list.dart';
 import './widgets/transaction_form.dart';
@@ -7,6 +8,11 @@ import './widgets/chart.dart';
 import './models/transaction.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  // SystemChrome.setPreferredOrientations([
+  //   DeviceOrientation.portraitUp,
+  //   DeviceOrientation.portraitDown,
+  // ]);
   runApp(const MyApp());
 }
 
@@ -88,26 +94,39 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Flutter Expenses App',
-        ),
-        actions: <Widget>[
-          IconButton(
-            onPressed: () => _startAddNewTransaction(context),
-            icon: const Icon(Icons.add),
-          )
-        ],
+    final appBar = AppBar(
+      title: const Text(
+        'Flutter Expenses App',
       ),
+      actions: <Widget>[
+        IconButton(
+          onPressed: () => _startAddNewTransaction(context),
+          icon: const Icon(Icons.add),
+        )
+      ],
+    );
+    return Scaffold(
+      appBar: appBar,
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Chart(weekTransactions: _weekTransactions),
-            TransactionList(
-              transactions: _userTransactions.reversed.toList(),
-              removeTransaction: _removeTransaction,
+            SizedBox(
+              height: (MediaQuery.of(context).size.height -
+                      appBar.preferredSize.height -
+                      MediaQuery.of(context).padding.top) *
+                  .3,
+              child: Chart(weekTransactions: _weekTransactions),
+            ),
+            SizedBox(
+              height: (MediaQuery.of(context).size.height -
+                      appBar.preferredSize.height -
+                      MediaQuery.of(context).padding.top) *
+                  .7,
+              child: TransactionList(
+                transactions: _userTransactions.reversed.toList(),
+                removeTransaction: _removeTransaction,
+              ),
             ),
           ],
         ),
