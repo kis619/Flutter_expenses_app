@@ -16,7 +16,7 @@ class TransactionList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 400,
+      height: 590,
       child: transactions.isEmpty
           ? Column(
               children: <Widget>[
@@ -62,7 +62,8 @@ class TransactionList extends StatelessWidget {
                       DateFormat.yMMMd().format(transactions[index].date),
                     ),
                     trailing: IconButton(
-                      onPressed: () => removeTransaction(transactions[index].id),
+                      onPressed: () =>
+                          removeTransaction(transactions[index].id),
                       icon: const Icon(Icons.delete),
                       color: Theme.of(context).colorScheme.error,
                     ),
