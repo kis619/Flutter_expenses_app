@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+// import 'package:flutter/services.dart';
 
 import './widgets/transactions_list.dart';
 import './widgets/transaction_form.dart';
@@ -8,7 +8,7 @@ import './widgets/chart.dart';
 import './models/transaction.dart';
 
 void main() {
-  WidgetsFlutterBinding.ensureInitialized();
+  // WidgetsFlutterBinding.ensureInitialized();
   // SystemChrome.setPreferredOrientations([
   //   DeviceOrientation.portraitUp,
   //   DeviceOrientation.portraitDown,
@@ -53,14 +53,9 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final List<Transaction> _userTransactions = [];
+  bool _showChart = true;
 
   List<Transaction> get _weekTransactions {
-    //   int startIndex = 0;
-    //   if (_userTransactions.length > 7) {
-    //     startIndex = _userTransactions.length - 7;
-    //   }
-    //   return _userTransactions.sublist(startIndex);
-
     return _userTransactions.where((tx) {
       return tx.date.isAfter(DateTime.now().subtract(const Duration(days: 7)));
     }).toList();
@@ -105,29 +100,60 @@ class _MyHomePageState extends State<MyHomePage> {
         )
       ],
     );
+    final isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
+    final transactionListWidget = SizedBox(
+      height: (MediaQuery.of(context).size.height -
+              appBar.preferredSize.height -
+              MediaQuery.of(context).padding.top) *
+          .7,
+      child: TransactionList(
+        transactions: _userTransactions.reversed.toList(),
+        removeTransaction: _removeTransaction,
+      ),
+    );
+
+
     return Scaffold(
       appBar: appBar,
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            SizedBox(
-              height: (MediaQuery.of(context).size.height -
-                      appBar.preferredSize.height -
-                      MediaQuery.of(context).padding.top) *
-                  .3,
-              child: Chart(weekTransactions: _weekTransactions),
-            ),
-            SizedBox(
-              height: (MediaQuery.of(context).size.height -
-                      appBar.preferredSize.height -
-                      MediaQuery.of(context).padding.top) *
-                  .7,
-              child: TransactionList(
-                transactions: _userTransactions.reversed.toList(),
-                removeTransaction: _removeTransaction,
+            if (isLandscape)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  const Text('Show chart'),
+                  Switch(
+                      value: _showChart,
+                      onChanged: (val) {
+                        setState(() {
+                          _showChart = val;
+                        });
+                      }),
+                ],
               ),
-            ),
+            if (!isLandscape) 
+              SizedBox(
+                      height: (MediaQuery.of(context).size.height -
+                              appBar.preferredSize.height -
+                              MediaQuery.of(context).padding.top) *
+                          .3,
+                      child: Chart(weekTransactions: _weekTransactions),
+                    ),
+            if (!isLandscape)
+              transactionListWidget,
+            if (isLandscape)
+            _showChart
+                ? SizedBox(
+                    height: (MediaQuery.of(context).size.height -
+                            appBar.preferredSize.height -
+                            MediaQuery.of(context).padding.top) *
+                        .7,
+                    child: Chart(weekTransactions: _weekTransactions),
+                  )
+                : transactionListWidget
           ],
         ),
       ),
