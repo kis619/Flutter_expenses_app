@@ -93,7 +93,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
     final isLandscape = mediaQuery.orientation == Orientation.landscape;
-    final ObstructingPreferredSizeWidget appBar = Platform.isIOS
+    final PreferredSizeWidget appBar = Platform.isIOS
         ? CupertinoNavigationBar(
             middle: const Text(
               'Flutter Expenses App',
@@ -118,7 +118,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 icon: const Icon(Icons.add),
               )
             ],
-          ) as ObstructingPreferredSizeWidget;
+          ) as PreferredSizeWidget;
     final transactionListWidget = SizedBox(
       height: (mediaQuery.size.height -
               appBar.preferredSize.height -
@@ -177,7 +177,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return Platform.isIOS
         ? CupertinoPageScaffold(
-            navigationBar: appBar,
+            navigationBar: appBar as ObstructingPreferredSizeWidget,
             child: pageBody,
           )
         : Scaffold(
