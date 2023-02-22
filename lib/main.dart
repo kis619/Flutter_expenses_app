@@ -89,7 +89,7 @@ class _MyHomePageState extends State<MyHomePage> {
         });
   }
 
-  List<Widget> _builderLanscapeContent(MediaQueryData mediaQuery,
+  List<Widget> _buildLanscapeContent(MediaQueryData mediaQuery,
       PreferredSizeWidget appBar, SizedBox transactionListWidget) {
     return [
       Row(
@@ -120,7 +120,7 @@ class _MyHomePageState extends State<MyHomePage> {
     ];
   }
 
-  List<Widget> _builderPortraitContent(MediaQueryData mediaQuery,
+  List<Widget> _buildPortraitContent(MediaQueryData mediaQuery,
       PreferredSizeWidget appBar, SizedBox transactionListWidget) {
     return [
       SizedBox(
@@ -134,11 +134,8 @@ class _MyHomePageState extends State<MyHomePage> {
     ];
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final mediaQuery = MediaQuery.of(context);
-    final isLandscape = mediaQuery.orientation == Orientation.landscape;
-    final PreferredSizeWidget appBar = Platform.isIOS
+  PreferredSizeWidget _buildAppBar() {
+    return Platform.isIOS
         ? CupertinoNavigationBar(
             middle: const Text(
               'Flutter Expenses App',
@@ -164,6 +161,14 @@ class _MyHomePageState extends State<MyHomePage> {
               )
             ],
           ) as PreferredSizeWidget;
+    ;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
+    final isLandscape = mediaQuery.orientation == Orientation.landscape;
+    final PreferredSizeWidget appBar = _buildAppBar();
     final transactionListWidget = SizedBox(
       height: (mediaQuery.size.height -
               appBar.preferredSize.height -
@@ -177,11 +182,12 @@ class _MyHomePageState extends State<MyHomePage> {
     final pageBody = SafeArea(
       child: SingleChildScrollView(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: isLandscape
-              ? _builderLanscapeContent(mediaQuery, appBar, transactionListWidget)
-              : _builderPortraitContent(mediaQuery, appBar, transactionListWidget)
-        ),
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: isLandscape
+                ? _buildLanscapeContent(
+                    mediaQuery, appBar, transactionListWidget)
+                : _buildPortraitContent(
+                    mediaQuery, appBar, transactionListWidget)),
       ),
     );
 
