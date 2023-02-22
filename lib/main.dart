@@ -161,7 +161,6 @@ class _MyHomePageState extends State<MyHomePage> {
               )
             ],
           ) as PreferredSizeWidget;
-    ;
   }
 
   @override
